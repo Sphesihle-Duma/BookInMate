@@ -1,0 +1,93 @@
+{%extends 'base.html'%}
+{%block title%}Admin{%endblock%}
+{%block content%}
+{%if login%}
+<h1>Dashboard</h1>
+<a href="{{url_for('admin')}}">Logout</a>
+<p id="email-status" style="display: none;">Email successfully sent!</p>
+{%if bookings|length() > 0%}
+{%for booking in bookings %}
+<div class='message'>
+  <p>Inmate_id: {{booking['inmate_id']}}</p>
+  <p>timeslot: {{booking['timeslot']}}<p>
+  <p>Visitor ID: {{booking['visitor_id']}}</p>
+  <p>Visitor email: {{booking['email']}}</p>
+    {%if booking['status'] == 'Pending'%}
+  <button class="approve-button" data-email="{{booking['email']}}" data-booking-id="{{ booking['booking_id'] }}">Approve</button>
+  <button class="decline-button" data-email="{{booking['email']}}" data-booking-id="{{booking['booking_id']}}">Decline</button>
+   {%else%}
+  <p>status:{{booking['status']}}</p>
+   {%endif%}
+
+</div>
+{%endfor%}
+{%endif%}
+{%else%}
+{%for msg in get_flashed_messages()%}
+  <div>{{msg}}</div>
+  {%endfor%}
+  <p>Please login</p>
+<form method='post'>
+  <label for='username'>Username:</label>
+  <br>
+  <input type='text' name='username'
+	 placeholder='username'
+	 value="{{request.form['username']}}" required></input>
+  <br>
+  <label for='password'>Password:</label>
+  <br>
+  <input type='text' name='password'
+	 placeholder='password'
+	 value="{{request.form['password']}}" required></input>
+  <br>
+  <button type="submit">Login</button>
+</form>
+{%endif%}
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $(".approve-button, .decline-button").click(function() {
+          var bookingId = $(this).data("booking-id");
+	  var newStatus = $(this).hasClass("approve-button") ? "Approved" : "Declined";
+	  var email = $(this).data("email");
+	  
+
+           // Send a PUT request to update the booking status
+    $.ajax({
+      url: "http://127.0.0.1:5001/api/update_booking_status",
+      type: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify({ booking_id: bookingId, new_status: newStatus, email: email }),
+      success: function (response) {
+        console.log(response);
+
+        // Send an email after updating the booking status
+        $.ajax({
+          url: "http://127.0.0.1:5001/api/send_email",
+          type: "GET",  // Assuming your email sending endpoint accepts GET requests
+          success: function (emailResponse) {
+            console.log(emailResponse);
+
+            // Display the success message
+            $("#email-status").text("Email successfully sent!");
+            $("#email-status").show();
+
+            // Reload the page after a successful email send
+            location.reload();
+          },
+          error: function (emailError) {
+            console.error(emailError);
+            // Handle error, if any
+          },
+        });
+      },
+      error: function (error) {
+        console.error(error);
+        // Handle error, if any
+      },
+    });
+  });
+});
+</script>
+       
+{%endblock%}

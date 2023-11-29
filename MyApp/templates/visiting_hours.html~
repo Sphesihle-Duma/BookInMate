@@ -1,0 +1,5 @@
+{%extends 'base.html'%}
+{%block title%}Visiting Hours{%endblock%}
+{%block content%}
+ <h1>Visiting Hours</h1>
+{%endblock%}

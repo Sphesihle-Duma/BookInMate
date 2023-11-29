@@ -1,0 +1,53 @@
+{%extends 'base.html'%}
+{%block title%}create a booking{%endblock%}
+{%block content%}
+<h1>Make a booking</h1>
+<form method="post" action="{{url_for('create_a_booking')}}">
+  <label for="firstname">InMate Number:</label>
+  <br>
+  <input type="text" name='InMateId'
+	 placeholder="InMate ID number"
+	 value="{{request.form['InMateId']}}" required>
+  <br>
+  <label for='dateInput'>Select a date:</label>
+  <br>
+  <input type="date" name='dateInput'
+	 value='{{request.form["dateInput"]}}' required>
+  <br>
+  <label for="timeInput">Select a Time Slot:</label>
+  <select name="timeInput">
+  {%for time_slot in time_slots%}
+    <option value="{{time_slot}}">{{time_slot}}</option>
+  {%endfor%}
+  </select>
+  <br>
+  <label for="facilityInput">Select A facility:</label>
+  <select name="facilityInput">
+    {%for facility in facilities%}
+    <option value="{{facility}}">{{facility}}</option>
+    {%endfor%}
+  </select>
+  <br>
+  <p>Your details</p>
+  <label for='firstname'>Name:</label>
+  <br>
+  <input type="text" name="firstname"
+	 placeholder="Enter your name"
+	 value="{{request.form['firstname']}}" required>
+  <br>
+  <label for="emailInput">Email</label>
+  <br>
+  <input type="email" name="emailInput"
+	 placeholder="example@gmail.com"
+	 value="{{request.form['emailInput']}}" required validType="email"></input>
+  <br>
+  <label for='visitorID'>Your ID:</label>
+  <br>
+  <input type='text' name='visitorID'
+	 placeholder='Please enter your ID'
+	 value="{{request.form['visitorID']}}" required></input>
+  <br>
+  <button type="submit">Submit</button>
+</form>
+{%endblock%}
+

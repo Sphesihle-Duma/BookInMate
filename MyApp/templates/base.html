@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %} - BookInMate</title>
+    <style>
+        nav a {
+            color: #d64161;
+            font-size: 20px;
+            margin-left: 50px;
+            text-decoration: none;
+        }
+	.message {
+            padding: 10px;
+            margin: 5px;
+            background-color: #f3f3f3
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{url_for('about_us')}}">About</a>
+	<a href="{{url_for('create_a_booking')}}">Create a booking</a>
+	<a href="{{url_for('visiting_process')}}">Visiting Process</a>
+	<a href="{{url_for('find_in_mate')}}">Find InMate</a>
+	<a href="{{url_for('admin')}}">Admin</a>
+    </nav>
+    <hr>
+    <div class="content">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>
