@@ -1,0 +1,80 @@
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://booking_test:3ID2h:44@localhost/booking_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Import your models here
+
+@app.route('/api/booking', methods=['POST', 'GET'])
+def handle_bookings():
+    from models.booking import Booking
+    from models.visitor import Visitor
+    from models.facility import Facility
+    from models.inmate import Inmate
+
+    if request.method == 'POST':
+        return create_booking(Booking, Visitor)
+    elif request.method == 'GET':
+        return get_all_bookings(Booking)
+
+def create_booking(Booking, Visitor):
+    try:
+        data = request.get_json()
+        required_params = ['inmate_id', 'visitor_id', 'date', 'timeslot', 'facility_id', 'name', 'email']
+        if not all(param in data for param in required_params):
+            return jsonify({'error': 'Missing required parameters'}), 400
+
+        new_visitor = Visitor(
+            visitor_id=data['visitor_id'],
+            email=data['email'],
+            name=data['name'],
+            facility_id=data['facility_id']
+        )
+        db.session.add(new_visitor)
+        db.session.commit()
+
+        new_booking = Booking(
+            booking_id=12334556,
+            inmate_id=data['inmate_id'],
+            visitor_id=data['visitor_id'],
+            date=data['date'],
+            timeslot=data['timeslot'],
+            status='Pending'
+        )
+        db.session.add(new_booking)
+        db.session.commit()
+
+        return jsonify({'message': 'Booking created successfully'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f'Error creating booking: {str(e)}'}), 500
+
+def get_all_bookings(Booking):
+    with app.app_context():
+        bookings = Booking.query.all()
+        bookings_list = [
+            {
+                "booking_id": booking.booking_id,
+                "inmate_id": booking.inmate_id,
+                "visitor_id": booking.visitor_id,
+                "date": booking.date,
+                "timeslot": booking.timeslot,
+                "status": booking.status
+            }
+            for booking in bookings
+        ]
+        return jsonify(bookings_list)
+
+@app.route('/api/facilities')
+def get_facility():
+    from models.facility import Facility
+    facility_ids = [row[0] for row in db.session.query(Facility.facility_id).all()]
+    return jsonify(facility_ids)
+
+if __name__ == '__main__':
+    app.run(debug=True, host="0.0.0.0", port=5001)

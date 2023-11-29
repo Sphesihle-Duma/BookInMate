@@ -1,0 +1,38 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://booking_test:3ID2h:44@localhost/booking_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+class Inmate(db.Model):
+    inmate_id = db.Column(db.String(50), primary_key=True)
+    name = db.Column(db.String(255))
+    facility_id = db.Column(db.String(50), db.ForeignKey('facility.facility_id'))
+
+class Visitor(db.Model):
+    visitor_id = db.Column(db.String(50), primary_key=True)
+    name = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+    facility_id = db.Column(db.String(50), db.ForeignKey('facility.facility_id'))
+
+class Booking(db.Model):
+    booking_id = db.Column(db.String(50), primary_key=True)
+    inmate_id = db.Column(db.String(50), db.ForeignKey('inmate.inmate_id'))
+    visitor_id = db.Column(db.String(50), db.ForeignKey('visitor.visitor_id'))
+    date = db.Column(db.Date)
+    status = db.Column(db.String(50))
+    timeslot = db.Column(db.String(50))
+    email = db.Column(db.String(255))
+
+class Facility(db.Model):
+    facility_id = db.Column(db.String(50), primary_key=True)
+    name = db.Column(db.String(255))
+    location = db.Column(db.String(255))
+    province = db.Column(db.String(255))
+
+# Create the tables
+with app.app_context():
+    db.create_all()
