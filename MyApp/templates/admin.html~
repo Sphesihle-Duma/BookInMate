@@ -44,50 +44,42 @@
 </form>
 {%endif%}
  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $(".approve-button, .decline-button").click(function() {
-          var bookingId = $(this).data("booking-id");
-	  var newStatus = $(this).hasClass("approve-button") ? "Approved" : "Declined";
-	  var email = $(this).data("email");
-	  
+ <script>
+  $(document).ready(function () {
+    $(".approve-button, .decline-button").click(function () {
+      var bookingId = $(this).data("booking-id");
+      var newStatus = $(this).hasClass("approve-button") ? "Approved" : "Declined";
+      var email = $(this).data('email');
 
-           // Send a PUT request to update the booking status
-    $.ajax({
-      url: "http://127.0.0.1:5001/api/update_booking_status",
-      type: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify({ booking_id: bookingId, new_status: newStatus, email: email }),
-      success: function (response) {
-        console.log(response);
+      // Confirm the action with the user
+      var confirmMessage = "Are you sure you want to " + newStatus.toLowerCase() + " this booking?";
+      if (!confirm(confirmMessage)) {
+        return; // Do nothing if the user cancels the action
+      }
 
-        // Send an email after updating the booking status
-        $.ajax({
-          url: "http://127.0.0.1:5001/api/send_email",
-          type: "GET",  // Assuming your email sending endpoint accepts GET requests
-          success: function (emailResponse) {
-            console.log(emailResponse);
-
-            // Display the success message
-            $("#email-status").text("Email successfully sent!");
-            $("#email-status").show();
-
-            // Reload the page after a successful email send
-            location.reload();
-          },
-          error: function (emailError) {
-            console.error(emailError);
-            // Handle error, if any
-          },
-        });
-      },
-      error: function (error) {
-        console.error(error);
-        // Handle error, if any
-      },
+      // Send a PUT request to update the booking status
+      $.ajax({
+        url: "/api/update_booking_status",
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ booking_id: bookingId, new_status: newStatus, email: email }),
+        success: function (response) {
+          console.log(response);
+          
+          // Update the UI without reloading the page
+          $(`.approve-button[data-booking-id='${bookingId}'], .decline-button[data-booking-id='${bookingId}']`).parent().fadeOut();
+          // Optionally display a success message
+          $("#email-status").show().delay(3000).fadeOut(); // Display for 3 seconds and then fade out
+        },
+        error: function (error) {
+          console.error(error);
+          alert("Booking update was not successful");
+        },
+      });
     });
   });
-});
+
+
 </script>
        
 {%endblock%}
