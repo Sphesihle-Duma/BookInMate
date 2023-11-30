@@ -1,14 +1,17 @@
-from flask import Flask, request, jsonify, current_app 
+from flask import Flask, request, jsonify,  make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
 from flask_cors import CORS
 import uuid
+import logging
 
 
 
 
 app = Flask(__name__)
-CORS(app, origins=["*"])
+CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5000"}})
+
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://booking_test:3ID2h:44@localhost/booking_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_SERVER']="smtp.gmail.com"
@@ -22,6 +25,7 @@ mail = Mail(app)
 
 
 db = SQLAlchemy(app)
+
 
 @app.route('/api/booking', methods=['POST'])
 def create_booking():
@@ -64,6 +68,7 @@ def get_facility():
     from models.facility import Facility
     facility_ids = [row[0] for row in db.session.query(Facility.facility_id).all()]
     return jsonify(facility_ids)
+
 @app.route('/api/all_bookings')
 def get_all_bookings():
     from models.booking import Booking
@@ -83,27 +88,6 @@ def get_all_bookings():
         ]
     return jsonify(bookings_list)
 
-@app.route('/api/send_mail', methods=['POST'])
-def send_mail():
-    try:
-        data = request.get_json()
-        recipient_email = data.get('email')
-
-        if not recipient_email:
-            return jsonify({'error': 'Missing recipient_email parameter'}), 400
-
-        mail_message = Message(
-            'Booking Approval',
-            sender="dumasphesihle22@gmail.com",
-            recipients=[recipient_email]
-        )
-        mail_message.body = "This is a test"
-        mail.send(mail_message)
-
-        return jsonify({'message': 'Successfully sent the email'}), 200
-    except Exception as e:
-        return jsonify({'error': f'Error sending email: {str(e)}'}), 500
-
 
 @app.route('/api/update_booking_status', methods=['PUT'])
 def update_booking_status():
@@ -115,10 +99,11 @@ def update_booking_status():
     data = request.get_json()
     booking_id = data.get('booking_id')
     new_status = data.get('new_status')
-
+    recipient_email = data.get('email')
+    app.logger.info(f"Recieved data: {data}")
     # Check if booking_id and new_status are provided
-    if not booking_id or not new_status:
-        return jsonify({'error': 'Missing booking_id or new_status parameter'}), 400
+    if not data or 'booking_id' not in data or "new_status" not in data or "email" not in data:
+        return jsonify({'error': 'Invalid request payload'}), 400
 
     # Query the database to find the booking by booking_id
     booking = db.session.query(Booking).filter_by(booking_id=booking_id).first()
@@ -133,12 +118,25 @@ def update_booking_status():
     try:
         # Commit the changes to the database
         db.session.commit()
+        
 
-        return jsonify({'message': f'Booking status updated to {new_status} successfully'}), 200
+        if not recipient_email:
+            return jsonify({'error': 'Missing recipient_email parameter'}), 400
+
+        mail_message = Message(
+            'Booking Approval',
+            sender="dumasphesihle22@gmail.com",
+            recipients=[recipient_email]
+        )
+        mail_message.body = "This is a test"
+        app.logger.info("sending the email")
+        mail.send(mail_message)
+
+        return jsonify({'message': 'Successfully sent the email'}), 200
     except Exception as e:
         # Rollback in case of an error
         db.session.rollback()
-        return jsonify({"error": f'Error updating booking status: {str(e)}'}), 500
+        return jsonify({"error": f'The email was not sent: {str(e)}'}), 500
 
     
 if __name__ == '__main__':

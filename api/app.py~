@@ -1,14 +1,17 @@
-from flask import Flask, request, jsonify, current_app 
+from flask import Flask, request, jsonify,  make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import uuid
+import logging
 
 
 
 
 app = Flask(__name__)
-CORS(app, origins=["*"])
+CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5000"}})
+
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://booking_test:3ID2h:44@localhost/booking_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_SERVER']="smtp.gmail.com"
@@ -22,6 +25,16 @@ mail = Mail(app)
 
 
 db = SQLAlchemy(app)
+logging.getLogger('flask_cors').setLevel(logging.DEBUG)
+
+@app.route('/api/options', methods=['OPTIONS'])
+def handle_options():
+    # Respond to the preflight request
+    response = make_response()
+    response.headers.add('Access-Control-Allow-Origin', 'http://127.0.0.1:5000')
+    response.headers.add('Access-Control-Allow-Headers', 'content-type')
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
+    return response
 
 @app.route('/api/booking', methods=['POST'])
 def create_booking():
@@ -64,6 +77,7 @@ def get_facility():
     from models.facility import Facility
     facility_ids = [row[0] for row in db.session.query(Facility.facility_id).all()]
     return jsonify(facility_ids)
+
 @app.route('/api/all_bookings')
 def get_all_bookings():
     from models.booking import Booking
@@ -84,7 +98,6 @@ def get_all_bookings():
     return jsonify(bookings_list)
 
 @app.route('/api/send_mail', methods=['POST'])
-@cross_origin()
 def send_mail():
     try:
         data = request.get_json()
@@ -104,6 +117,15 @@ def send_mail():
         return jsonify({'message': 'Successfully sent the email'}), 200
     except Exception as e:
         return jsonify({'error': f'Error sending email: {str(e)}'}), 500
+
+    response = jsonify({'message': 'Successfully sent the email'})
+    response.headers.add('Access-Control-Allow-Origin', 'http://127.0.0.1:5000')
+    response.headers.add('Access-Control-Allow-Headers', 'content-type')
+    response.headers.add('Access-Control-Allow-Methods', 'POST')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    response.headers.add('Content-Type', 'application/json')  # Set Content-Type to application/json
+
+    return response
 
 
 @app.route('/api/update_booking_status', methods=['PUT'])
