@@ -59,7 +59,7 @@
 
       // Send a PUT request to update the booking status
       $.ajax({
-        url: "/api/update_booking_status",
+        url: "http://127.0.0.1:5001/api/update_booking_status",
         type: "PUT",
         contentType: "application/json",
         data: JSON.stringify({ booking_id: bookingId, new_status: newStatus, email: email }),
