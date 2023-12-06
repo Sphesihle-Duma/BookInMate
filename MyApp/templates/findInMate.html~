@@ -3,7 +3,7 @@
 {%block content%}
 <h1>Find inMate</h1>
  <div class="searchBox">
-    <input type="text" class="searchInput" placeholder="Please enter inMate ID">
+    <input type="text" class="searchInput" placeholder="Search...">
     <button class="searchButton">&#128269;</button>
  </div>
 <div class="centered-container" id="resultsContainer">
@@ -13,12 +13,11 @@
   #resultsContainer {
       margin-top: 20px;
   }
-   p {
-      font-size: 20px;
-      padding-left: 10px;
+  .resultItem {
+      margin-bottom: 10px;
     }
    h1{
-       padding-left: 200px;
+       text-align:center;
    }
    .searchBox {
   display: flex;
@@ -43,14 +42,14 @@
   display: inline-block;
   transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
 }
-  /*hover effect */
+/*hover effect*/
 button:hover {
   color: #fff;
   background-color: #1A1A1A;
   box-shadow: rgba(0, 0, 0, 0.5) 0 10px 20px;
   transform: translateY(-3px);
 }
-/*button pressing effect */
+/*button pressing effect*/
 button:active {
   box-shadow: none;
   transform: translateY(0);
@@ -66,16 +65,18 @@ button:active {
 }
 .centered-container {
   display: flex;
+  justify-content: center;
   align-items: center;
+  height: 100vh;
 }
+
 </style>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
  <script>
-   $(document).ready(function() {
-       console.log("testing")
-      $('.searchButton').on('click', function() {
-          var inputId = $('.searchInput').val();
-	  console.log(inputId)
+    $(document).ready(function() {
+      $('#searchButton').on('click', function() {
+          var inputId = $('#searchInput').val();
+	  console.log("Before Ajax request")
 
         // Call the API
         $.ajax({
