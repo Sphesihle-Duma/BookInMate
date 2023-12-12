@@ -38,7 +38,9 @@
                         </tr>
                     {% endfor %}
                 </tbody>
-            </table>
+</table>
+{%else%}
+            <p>No bookings available.</p>
 {%endif%}
 {%else%}
 
@@ -57,7 +59,7 @@
    </div>
    <div class="mb-3">
   <label class="form-label" for='password'>Password:</label>
-  <input class="form-control" type='text' name='password'
+  <input class="form-control" type='password' name='password'
 	 placeholder='password'
 	 value="{{request.form['password']}}" required></input>
   </div>
