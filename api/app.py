@@ -62,7 +62,7 @@ def create_booking():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f'Error creating booking: {str(e)}'}), 500
-    
+
 @app.route('/api/facilities')
 def get_facility():
     from models.facility import Facility
@@ -137,6 +137,29 @@ def update_booking_status():
         # Rollback in case of an error
         db.session.rollback()
         return jsonify({"error": f'The email was not sent: {str(e)}'}), 500
+
+@app.route('/api/all_inmate')
+def get_all_inmates():
+    from models.inmate import Inmate
+    
+    try:
+        inmates = db.session.query(Inmate).all()
+        app.logger.info("Fetching all records from inmate table")
+
+        inmates_list = [
+            {
+                "inmate_id": inmate.inmate_id,
+                "name": inmate.name,
+                "facility_id": inmate.facility_id
+                # Add more fields as needed
+            }
+            for inmate in inmates
+        ]
+
+        return jsonify(inmates_list)
+    except Exception as e:
+        return jsonify({"error": f'Error fetching inmates: {str(e)}'}), 500
+
 
     
 if __name__ == '__main__':

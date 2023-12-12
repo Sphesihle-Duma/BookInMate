@@ -1,75 +1,31 @@
 {%extends 'base.html'%}
 {%block title%}About{%endblock%}
 {%block content%}
-<style>
-  .container{
-      /*background-color:red;*/
-      box-sizing:border-box;*
-      margin:0;
-      width:80%;
-      padding: 0 5%;
-      padding-bottom:5%;
-  }
-  p, li{
-      text-align:justify;
-      font-size:18px;
-      
-  }
- 
-   #key-flex-one li {
-    font-size: 15px;
-  }
-  .key-flex{
-      /*background-color:blue;*/
-      border-top:1px solid white;
-      display:flex;
-  }
-  #key-flex-one{
-      width:50%;
-      padding-right:10px;
-  }
-  #key-flex-two{
-      width: 50%;
-  }
-  #key-flex-two li {
-    font-size: 15px;
-  }
-  .ori-flex{
-      display: flex;
-      border-top:1px solid white;
-  }
-  .third-flex{
-      width:50%;
-  }
-  .last-flex{
-      width: 50%;
-  }
-  
-  
-</style>
-<div class="container">
+
+<div class="container  p-2 my-5 d-flex aligns-items-center justify-content-center">
+  <div class="content  m-5 p-3 fs-5 my-card">
  <h1>About Inmate Visitation Booking System</h1>
 
     <p>
         The Inmate Visitation Booking System is a user-friendly online platform designed to facilitate the scheduling and management of visitation slots for inmates. Our system aims to provide a secure, efficient, and compliant solution for families and friends to connect with their incarcerated loved ones.
     </p>
-    <div class="key-flex">
-      <div id="key-flex-one">
+    <div>
+      <div>
 	<h2>Mission:</h2>
 	<p>
         We are committed to providing a reliable and user-centric solution to meet the unique needs of inmate visitation. The Inmate Visitation Booking System aims to connect loved ones, one visit at a time.
     </p>
    
       </div>
-      <div id="key-flex-two">
+      <div>
      <h2>Objective:</h2>
     <p>
         Our goal is to streamline the visitation process, offering a straightforward and accessible way for users to book visitation slots while adhering to legal and regulatory requirements within correctional facilities.
     </p>
     </div>
-</div>
-    <div class="ori-flex">
-      <div class="third-flex">
+
+    <div>
+      <div>
      <h2>Benefits:</h2>
     <ul>
         <li>Improved User Experience for Visitors</li>
@@ -77,7 +33,7 @@
         <li>Enhanced Security and Compliance</li>
     </ul>
     </div>
-    <div class="last-flex">
+    <div >
      <h2>Key Features:</h2>
     <ul>
         <li>Easy and Intuitive Booking Process</li>
@@ -87,5 +43,7 @@
     </ul>
     </div>
     </div>
+   </div>
     </div>
 {%endblock%}
+

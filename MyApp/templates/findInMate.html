@@ -1,119 +1,16 @@
 {%extends 'base.html'%}
 {%block title%}FindInMate{%endblock%}
 {%block content%}
-<h1>Find inMate</h1>
+<div class="container-fluid min-vh-100 my-5 pt-4">
+<h2 class="text-center my-3">Find inMate</h2>
  <div class="searchBox">
     <input type="text" class="searchInput" placeholder="Please enter inMate ID">
     <button class="searchButton">&#128269;</button>
  </div>
-<div class="centered-container" id="resultsContainer">
+<div class="text-info centered-container" id="resultsContainer">
     <!-- Results will be displayed here -->
 </div>
-<style>
-  #resultsContainer {
-      margin-top: 20px;
-  }
-   p {
-      font-size: 20px;
-      padding-left: 10px;
-    }
-   h1{
-       padding-left: 200px;
-   }
-   .searchBox {
-  display: flex;
-  width:50% ;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  background: #2f3640;
-  border-radius: 50px;
-  position: relative;
-}
+</div>
 
-.searchButton {
-  color: white;
-  position: absolute;
-  right: 8px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--gradient-2, linear-gradient(90deg, #2AF598 0%, #009EFD 100%));
-  border: 0;
-  display: inline-block;
-  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
-}
-  /*hover effect */
-button:hover {
-  color: #fff;
-  background-color: #1A1A1A;
-  box-shadow: rgba(0, 0, 0, 0.5) 0 10px 20px;
-  transform: translateY(-3px);
-}
-/*button pressing effect */
-button:active {
-  box-shadow: none;
-  transform: translateY(0);
-}
 
-.searchInput {
-  border: none;
-  background: none;
-  outline: none;
-  color: white;
-  font-size: 15px;
-  padding: 24px 46px 24px 26px;
-}
-.centered-container {
-  display: flex;
-  align-items: center;
-}
-</style>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
- <script>
-   $(document).ready(function() {
-       console.log("testing")
-      $('.searchButton').on('click', function() {
-          var inputId = $('.searchInput').val();
-	  console.log(inputId)
-
-        // Call the API
-        $.ajax({
-          url: 'http://127.0.0.1:5001/api/all_inmate',  // Replace with your API endpoint
-          method: 'GET',
-          success: function(data) {
-              // Filter results based on input ID
-	      console.log('Success:', data);
-            var filteredResults = data.filter(function(item) {
-              return item.inmate_id === inputId;
-            });
-
-            // Display results
-            displayResults(filteredResults);
-          },
-          error: function(error) {
-            console.error('Error fetching data:', error);
-          }
-        });
-      });
-
-      function displayResults(results) {
-        var resultsContainer = $('#resultsContainer');
-        resultsContainer.empty();  // Clear previous results
-
-        if (!results || results.length === 0) {
-          resultsContainer.append('<p>No results found.</p>');
-        } else {
-          results.forEach(function(result) {
-            var resultItem = $('<div class="resultItem"></div>');
-            resultItem.append('<p>Inmate ID: ' + result.inmate_id + '</p>');
-            resultItem.append('<p>Name: ' + result.name + '</p>');
-            resultItem.append('<p>Facility ID: ' + result.facility_id + '</p>');
-
-            resultsContainer.append(resultItem);
-          });
-        }
-      }
-    });
-  </script> 
 {%endblock%}

@@ -3,7 +3,7 @@
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 import requests
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'f9a5715d1cdf9bfa442cba7b27084332154ebf1a4598ae44'
 time_slots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"]
 

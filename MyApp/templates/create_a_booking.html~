@@ -1,82 +1,117 @@
 {%extends 'base.html'%}
 {%block title%}create a booking{%endblock%}
 {%block content%}
-<style>
- 
-  form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 40%; /* Adjust the width as needed */
-      box-sizing: border-box;
-      margin: 0px auto;
-      padding: 10px 10px;
+<div class="container-fluid my-5">
+  <h1 class="h3 text-center my-card pt-4 mt-4 pb-3">BookInMate</h1>
   
-
-  input,
-  select {
-    width: 80%;
-    padding: 5px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-  }
-
-  button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  /* Add other styling as needed */
-
-</style>
-<form method="post" action="{{url_for('create_a_booking')}}">
-  <label for="firstname">InMate Number:</label>
-  <br>
+  <div class="container d-flex flex-colomn align-items-center justify-content-center w-75 my-4">
+   
+    <form class="w-75 my-card p-3" method="post" action="{{url_for('create_a_booking')}}" id="bookingForm">
+      <div class="row mb-3">
+       <label for="firstname" class="col-form-label col-sm-3 fs-5">InMate Number</label>
+    <div class="col-sm-9" >  
   <input type="text" name='InMateId'
 	 placeholder="InMate ID number"
-	 value="{{request.form['InMateId']}}" required>
-  <br>
-  <label for='dateInput'>Select a date:</label>
-  <br>
+	 value="{{request.form['InMateId']}}"
+	 class="form-control"
+	 required>
+  </div>
+      </div>
+   <div class="row mb-3">
+     <label for='dateInput' class="col-form-label col-sm-3 fs-5">Select a date</label>
+     <div class="col-sm-9">
   <input type="date" name='dateInput'
-	 value='{{request.form["dateInput"]}}' required>
-  <br>
-  <label for="timeInput">Select a Time Slot:</label>
-  <select name="timeInput">
+	 value='{{request.form["dateInput"]}}'
+	 class="form-control">
+  </div>
+   </div>
+
+   <div class="row mb-3">
+  <label for="timeInput" class="col-form-label col-sm-3 fs-5">Select a time slot</label>
+  <div class="col-sm-9">
+    <select name="timeInput" class="form-select">
   {%for time_slot in time_slots%}
     <option value="{{time_slot}}">{{time_slot}}</option>
   {%endfor%}
   </select>
-  <br>
-  <label for="facilityInput">Select A facility:</label>
-  <select name="facilityInput">
+  </div>
+   </div>
+   <div class="row mb-3">
+     
+     <label for="facilityInput" class="col-form-label col-sm-3 fs-5">Select a facility</label>
+     <div class="col-sm-9">
+  <select name="facilityInput" class="form-select">
     {%for facility in facilities%}
     <option value="{{facility}}">{{facility}}</option>
     {%endfor%}
   </select>
-  <label for='firstname'>Name:</label>
-  <br>
+     </div>
+   </div>
+
+    <div class="row mb-3">
+     
+      <label for='firstname' class="col-form-label col-sm-3 fs-5">Your Name</label>
+      <div class="col-sm-9">
   <input type="text" name="firstname"
 	 placeholder="Enter your name"
-	 value="{{request.form['firstname']}}" required>
-  <br>
-  <label for="emailInput">Email</label>
-  <br>
+	 value="{{request.form['firstname']}}"
+	 class="form-control"
+	 required>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label for="emailInput" class="col-form-label col-sm-3 fs-5">Your Email</label>
+      <div class="col-sm-9">
   <input type="email" name="emailInput"
 	 placeholder="example@gmail.com"
-	 value="{{request.form['emailInput']}}" required validType="email"></input>
-  <br>
-  <label for='visitorID'>Your ID:</label>
-  
+	 value="{{request.form['emailInput']}}"
+	 validType="email" class="form-control"
+	 required>
+    </input>
+      </div>
+      </div>
+    <div class="row mb-3">
+      <label for='visitorID' class="col-form-label col-sm-3 fs-5">Your ID</label>
+      <div class="col-sm-9">
   <input type='text' name='visitorID'
 	 placeholder='Please enter your ID'
-	 value="{{request.form['visitorID']}}" required></input>
-<br>
-  <button type="submit">Submit</button>
+	 value="{{request.form['visitorID']}}"
+	 class="form-control"
+	 required></input>
+      </div>
+    </div>
+    <div id="validation-errors" class="alert alert-danger" style="display:none;"></div>
+  <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+</div>
+</div>
+
+
+<script>
+  // Validate form using Bootstrap
+var bookingForm = document.getElementById('bookingForm');
+bookingForm.addEventListener('submit', function (event) {
+    if (!bookingForm.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    // Example: Handle specific server-side error messages
+    var validationErrors = document.getElementById('validation-errors');
+    validationErrors.innerHTML = '';  // Clear previous errors
+
+    {% if errors is defined and errors.get("Invalid inmate_id or inmate_id does not match facility_id") %}
+        validationErrors.innerHTML = '<div class="alert alert-danger">' +
+            'Invalid inmate_id or inmate_id does not match facility_id</div>';
+        validationErrors.style.display = 'block';
+        event.preventDefault();  // Prevent form submission on error
+    {% endif %}
+
+    // Bootstrap form validation
+    bookingForm.classList.add('was-validated');
+});
+
+</script>
 {%endblock%}
 
