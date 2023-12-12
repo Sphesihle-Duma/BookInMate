@@ -2,11 +2,13 @@
 {%block title%}Admin{%endblock%}
 {%block content%}
 {%if login%}
+<div class="container mt-5 mb-1 d-flex flex-row pt-4 justify-content-between">
 <h1>Dashboard</h1>
-<a id="logout" href="{{url_for('admin')}}">Logout</a>
+<a id="logout" href="{{url_for('admin')}}" class="text-white align-self-center shadow p-1 text-decoration-none h5 ">Logout</a>
+</div>
 <p id="email-status" style="display: none;">Email successfully sent!</p>
 {%if bookings|length() > 0%}
-<table class="table">
+<table class="table text-white">
                 <thead>
                     <tr>
                         <th>Inmate ID</th>
@@ -40,7 +42,7 @@
                 </tbody>
 </table>
 {%else%}
-            <p>No bookings available.</p>
+<p>No bookings available.</p>
 {%endif%}
 {%else%}
 
