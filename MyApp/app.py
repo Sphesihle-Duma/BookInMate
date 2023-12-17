@@ -38,11 +38,18 @@ def create_a_booking():
         response = requests.post(url, json=booking_data)
         if response.status_code == 201:
             app.logger.info("Booking created successfully!")
+            flash("Thank you, we have recieved your request")
+            return redirect(url_for('index'))
         else:
             app.logger.debug(f"Error:{response.status_code}\n{response.text}")
-        app.logger.info("Printing a message")
-        flash("Thank you, we have recieved your request")
-        return redirect(url_for('index'))
+            error_message = response.json().get('error', 'An error occurred during booking.')
+            if 'Duplicate entry' in error_message:
+                flash("Booking failed: A booking already exists for this inmate and visitor.")
+            else:
+                flash(f"Booking failed: {error_message}", 'error')
+
+       
+        
     app.logger.info("Load a booking page")
     return render_template('create_a_booking.html', time_slots=time_slots, facilities=facilities)
 

@@ -86,32 +86,5 @@
 </form>
 </div>
 </div>
-
-
-<script>
-  // Validate form using Bootstrap
-var bookingForm = document.getElementById('bookingForm');
-bookingForm.addEventListener('submit', function (event) {
-    if (!bookingForm.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-
-    // Example: Handle specific server-side error messages
-    var validationErrors = document.getElementById('validation-errors');
-    validationErrors.innerHTML = '';  // Clear previous errors
-
-    {% if errors is defined and errors.get("Invalid inmate_id or inmate_id does not match facility_id") %}
-        validationErrors.innerHTML = '<div class="alert alert-danger">' +
-            'Invalid inmate_id or inmate_id does not match facility_id</div>';
-        validationErrors.style.display = 'block';
-        event.preventDefault();  // Prevent form submission on error
-    {% endif %}
-
-    // Bootstrap form validation
-    bookingForm.classList.add('was-validated');
-});
-
-</script>
 {%endblock%}
 

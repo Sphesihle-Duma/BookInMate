@@ -3,6 +3,9 @@
 {%block content%}
 <div class="container-fluid my-5">
   <h1 class="h3 text-center my-card pt-4 mt-4 pb-3">BookInMate</h1>
+   {%for msg in get_flashed_messages()%}
+  <div>{{msg}}</div>
+  {%endfor%}
   
   <div class="container d-flex flex-colomn align-items-center justify-content-center w-75 my-4">
    

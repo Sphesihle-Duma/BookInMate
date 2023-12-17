@@ -37,6 +37,20 @@ def create_booking():
     required_params = ['inmate_id', 'visitor_id', 'date', 'timeslot', 'facility_id', 'name', 'email']
     if not all(param in data for param in required_params):
         return jsonify({'error': 'Missing required parameters'}), 400
+    
+    inmate = db.session.query(Inmate).filter_by(inmate_id=data['inmate_id']).first()
+    print(inmate)
+    if not inmate:
+        return jsonify({'error': 'Invalid inmate_id'}), 400
+
+    if data['facility_id'] != inmate.facility_id:
+        return jsonify({'error': 'Invalid facility_id for the given inmate_id'}), 400
+
+    # Check for duplicate booking
+    existing_booking = db.session.query(Booking).filter_by(inmate_id=data['inmate_id'], visitor_id=data['visitor_id']).first()
+    if existing_booking:
+        return jsonify({'error': 'Booking already exists for this inmate and visitor'}), 400
+    
     try:
         new_visitor = Visitor(
         visitor_id = data['visitor_id'],

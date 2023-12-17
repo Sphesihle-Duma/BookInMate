@@ -2,48 +2,72 @@
 {%block title%}Admin{%endblock%}
 {%block content%}
 {%if login%}
+<div class="container mt-5 mb-1 d-flex flex-row pt-4 justify-content-between">
 <h1>Dashboard</h1>
-<a id="logout" href="{{url_for('admin')}}">Logout</a>
+<a id="logout" href="{{url_for('admin')}}" class="text-white align-self-center shadow p-1 text-decoration-none h5 ">Logout</a>
+</div>
 <p id="email-status" style="display: none;">Email successfully sent!</p>
 {%if bookings|length() > 0%}
-{%for booking in bookings %}
-<div class='message'>
-  <p>Inmate_id: {{booking['inmate_id']}}</p>
-  <p>timeslot: {{booking['timeslot']}}<p>
-  <p>Visitor ID: {{booking['visitor_id']}}</p>
-  <p>Visitor email: {{booking['email']}}</p>
-    {%if booking['status'] == 'Pending'%}
-  <button class="approve-button" data-email="{{booking['email']}}" data-booking-id="{{ booking['booking_id'] }}">Approve</button>
-  <button class="decline-button" data-email="{{booking['email']}}" data-booking-id="{{booking['booking_id']}}">Decline</button>
-   {%else%}
-  <p>status:{{booking['status']}}</p>
-   {%endif%}
-
-</div>
-{%endfor%}
+<table class="table text-white">
+                <thead>
+                    <tr>
+                        <th>Inmate ID</th>
+                        <th>Timeslot</th>
+                        <th>Visitor ID</th>
+                        <th>Visitor Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking['inmate_id'] }}</td>
+                            <td>{{ booking['timeslot'] }}</td>
+                            <td>{{ booking['visitor_id'] }}</td>
+                            <td>{{ booking['email'] }}</td>
+                            <td>
+                                {% if booking['status'] == 'Pending' %}
+                                    <button class="approve-button" data-email="{{ booking['email'] }}" data-booking-id="{{ booking['booking_id'] }}">Approve</button>
+                                    <button class="decline-button" data-email="{{ booking['email'] }}" data-booking-id="{{ booking['booking_id'] }}">Decline</button>
+                                {% else %}
+                                    {{ booking['status'] }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <!-- Add any additional actions or buttons here -->
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+</table>
+{%else%}
+<p>No bookings available.</p>
 {%endif%}
 {%else%}
 
-<div class="mt-5 py-5" id="login-form-container">
-  {%for msg in get_flashed_messages()%}
+<div class="container mt-3 py-5">
+ 
+<div class=" vh-100 d-sm-flex flex-column p-2 justify-content-sm-center align-items-sm-center">
+  <form class="my-card p-5" method='post'>
+     {%for msg in get_flashed_messages()%}
   <div>{{msg}}</div>
   {%endfor%}
-
-  <form id="login-form" method='post'>
-     <label for='password'>Username:</label>
-  <br>
-  <input class="input" type='text' name='username'
+   <div class="mb-3">
+     <label class="form-label" for='password'>Username:</label>
+  <input class="form-control" type='text' name='username'
 	 placeholder='username'
 	 value="{{request.form['username']}}" required></input>
-  <br>
-  <label for='password'>Password:</label>
-  <br>
-  <input class="input" type='text' name='password'
+   </div>
+   <div class="mb-3">
+  <label class="form-label" for='password'>Password:</label>
+  <input class="form-control" type='password' name='password'
 	 placeholder='password'
 	 value="{{request.form['password']}}" required></input>
-  <br>
-  <button type="submit">Login</button>
-</form>
+  </div>
+  <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+  </div>
 </div>
 {%endif%}
  

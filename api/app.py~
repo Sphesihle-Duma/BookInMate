@@ -33,23 +33,10 @@ def create_booking():
     from models.visitor import Visitor
     from models.facility import Facility
     from models.inmate import Inmate
-    
     data = request.get_json()
-
     required_params = ['inmate_id', 'visitor_id', 'date', 'timeslot', 'facility_id', 'name', 'email']
-    
     if not all(param in data for param in required_params):
-        errors = {'error': 'Missing required parameters'}
-        return render_template('your_template.html', errors=errors), 400
-
-    # Validate inmate_id and facility_id
-    inmate = Inmate.query.filter_by(inmate_id=data['inmate_id'], facility_id=data['facility_id']).first()
-    if inmate is None:
-        errors = {'error': 'Invalid inmate_id or inmate_id does not match facility_id'}
-        print(errors)
-        # return render_template('create_a_booking.html', errors=errors), 400
-
-    # Rest of your code remains unchanged
+        return jsonify({'error': 'Missing required parameters'}), 400
     try:
         new_visitor = Visitor(
         visitor_id = data['visitor_id'],
@@ -71,12 +58,10 @@ def create_booking():
         db.session.add(new_booking)
         db.session.commit()
 
-        return jsonify({'message': 'Booking created successfully'}), 201
+        return jsonify({'message':'Booking created successfully'}), 201
     except Exception as e:
         db.session.rollback()
-        logging.error(f'Error creating booking: {str(e)}')
-        errors = {"error": f'Error creating booking: {str(e)}'}
-        return render_template('create_a_booking.html', errors=errors), 500
+        return jsonify({"error": f'Error creating booking: {str(e)}'}), 500
 
 @app.route('/api/facilities')
 def get_facility():
