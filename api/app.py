@@ -9,7 +9,7 @@ import logging
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://127.0.0.1:5000"}})
+CORS(app, resources={r"/api/*": {"origins": "http://dumasphesihle.tech"}},supports_credentials=True)
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://booking_test:3ID2h:44@localhost/booking_db'

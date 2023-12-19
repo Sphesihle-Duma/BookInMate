@@ -9,7 +9,7 @@
 
       // Call the API
       $.ajax({
-        url: 'http://127.0.0.1:5001/api/all_inmate',
+        url: 'http://dumasphesihle.tech:5001/api/all_inmate',
         method: 'GET',
         success: function(data) {
           console.log('Success:', data);
