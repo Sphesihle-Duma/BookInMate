@@ -142,7 +142,7 @@ def update_booking_status():
             sender="dumasphesihle22@gmail.com",
             recipients=[recipient_email]
         )
-        mail_message.body = "This is a test"
+        mail_message.body = "Your booking was approved"
         app.logger.info("sending the email")
         mail.send(mail_message)
 
