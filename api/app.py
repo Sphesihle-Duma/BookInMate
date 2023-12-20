@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify,  make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Message, Mail
 from flask_cors import CORS
+from datetime import datetime
 import uuid
 import logging
 
@@ -128,6 +129,8 @@ def update_booking_status():
 
     # Update the booking status to the new status
     booking.status = new_status
+
+    current_timeslot = booking.timeslot
     
     try:
         # Commit the changes to the database
@@ -137,12 +140,18 @@ def update_booking_status():
         if not recipient_email:
             return jsonify({'error': 'Missing recipient_email parameter'}), 400
 
+        email_body = f"Your booking with ID: {booking_id}\n"
+        email_body += f"Status: {new_status}\n"
+        email_body += f"Timeslot: {current_timeslot}\n"
+        email_body += f"Processed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+
+
         mail_message = Message(
             'Booking Approval',
             sender="dumasphesihle22@gmail.com",
             recipients=[recipient_email]
         )
-        mail_message.body = "Your booking was approved"
+        mail_message.body = email_body
         app.logger.info("sending the email")
         mail.send(mail_message)
 

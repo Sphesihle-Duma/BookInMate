@@ -2,6 +2,7 @@
 {%block title%}Admin{%endblock%}
 {%block content%}
 {%if login%}
+<div class="vh-100">
 <div class="container mt-5 mb-1 d-flex flex-row pt-4 justify-content-between">
 <h1>Dashboard</h1>
 <a id="logout" href="{{url_for('admin')}}" class="text-white align-self-center shadow p-1 text-decoration-none h5 ">Logout</a>
@@ -28,8 +29,8 @@
                             <td>{{ booking['email'] }}</td>
                             <td>
                                 {% if booking['status'] == 'Pending' %}
-                                    <button class="approve-button" data-email="{{ booking['email'] }}" data-booking-id="{{ booking['booking_id'] }}">Approve</button>
-                                    <button class="decline-button" data-email="{{ booking['email'] }}" data-booking-id="{{ booking['booking_id'] }}">Decline</button>
+                                    <button class="approve-button btn btn-primary btn-sm" data-email="{{ booking['email'] }}" data-booking-id="{{ booking['booking_id'] }}">Approve</button>
+                                    <button class="decline-button btn btn-danger btn-sm" data-email="{{ booking['email'] }}" data-booking-id="{{ booking['booking_id'] }}">Decline</button>
                                 {% else %}
                                     {{ booking['status'] }}
                                 {% endif %}
@@ -46,6 +47,7 @@
   <p>No bookings available.</p>
   </div>
 {%endif%}
+</div>
 {%else%}
 
 <div class="container mt-3 py-5">
